@@ -1,1 +1,4 @@
-from .its import *
+'''
+Its module
+'''
+from .its import Its
