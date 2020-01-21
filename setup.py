@@ -22,16 +22,16 @@ class PyTest(TestCommand):
 
 
 setup(
-    name="aic",
+    name="its",
     version="0.0.1",
     author="Avi Yeger",
     author_email="yeger00@gmail.com",
-    description="aic",
+    description="An “Issue tracking system” as part of your repository",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yeger00/aic",
+    url="https://github.com/yeger00/its",
     packages=find_packages(),
     tests_require=["pytest", "pytest_mock"],
     cmdclass={"test": PyTest},
-    scripts=["./bin/aiccli"],
+    scripts=["./bin/itscli"],
 )

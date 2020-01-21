@@ -3,7 +3,7 @@
 import click
 import os
 import yaml
-import aic
+import its
 
 @click.group()
 def cli():
@@ -12,27 +12,33 @@ def cli():
 
 @cli.command()
 def init():
-    aic.Aic(os.getcwd(), True)
+    its.Its(os.getcwd(), True)
     click.echo('init')
-    click.echo('mkdir .aic')
+    click.echo('mkdir .its')
 
 
-@cli.group()
+@cli.group(invoke_without_command=True)
 @click.option('--id', type=int, required=False)
 @click.pass_context
 def issue(ctx, id):
-    aic = aic.Aic(os.getcwd(), False)
-    issue = aic.issues().get(id)
-    ctx.obj = (aic, issue)
-    click.echo("issue: {id}".format(id=id))
+    its_obj = its.Its(os.getcwd(), False)
+    issue = its_obj.issues().get(id)
+    ctx.obj = (its_obj, issue)
+    if ctx.invoked_subcommand is not None:
+        return
+
+    if issue is not None:
+        click.echo("issue: {issue}".format(issue=issue))
+    else:
+        click.echo(ctx.get_help())
 
 
 @issue.command()
-@click.argument('id', type=int, required=True)
+# @click.argument('id', type=int, required=True)
 @click.argument('title', type=str, required=True)
 @click.pass_obj
-def new(ctx, id, title):
-    ctx[0].issues().add(aic.Issue(id, title))
+def new(ctx, title):
+    ctx[0].issues().add(its.Issue(title))
     click.echo("new")
 
 
@@ -40,7 +46,7 @@ def new(ctx, id, title):
 @click.pass_obj
 def list(ctx):
     click.echo("list:")
-    click.echo(ctx[0].issues().all_objects)
+    click.echo(ctx[0].issues().all())
 
 
 @issue.group()

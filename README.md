@@ -1,5 +1,5 @@
-# aiccli
-`aiccli` is an acronym of “All Is Code Command Line Interface”. 
+# its
+`its`- an “Issue tracking system” as part of your repository.
 
 # Installation
 
