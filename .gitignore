@@ -1,1 +1,6 @@
 *.pyc
+*.pyo
+*.egg-info
+develop-eggs
+.eggs
+.tox

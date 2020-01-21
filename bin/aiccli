@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+
+import click
+import os
+import yaml
+import aic
+
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+def init():
+    aic.Aic(os.getcwd(), True)
+    click.echo('init')
+    click.echo('mkdir .aic')
+
+
+@cli.group()
+@click.option('--id', type=int, required=False)
+@click.pass_context
+def issue(ctx, id):
+    aic = aic.Aic(os.getcwd(), False)
+    issue = aic.issues().get(id)
+    ctx.obj = (aic, issue)
+    click.echo("issue: {id}".format(id=id))
+
+
+@issue.command()
+@click.argument('id', type=int, required=True)
+@click.argument('title', type=str, required=True)
+@click.pass_obj
+def new(ctx, id, title):
+    ctx[0].issues().add(aic.Issue(id, title))
+    click.echo("new")
+
+
+@issue.command()
+@click.pass_obj
+def list(ctx):
+    click.echo("list:")
+    click.echo(ctx[0].issues().all_objects)
+
+
+@issue.group()
+@click.pass_obj
+def add(issue):
+    pass
+
+
+@add.command()
+@click.argument('comment', type=str)
+@click.pass_obj
+def comment(issue, comment):
+    click.echo("add to: {id}".format(id=issue.id))
+    click.echo("comment: {comment}".format(comment=comment))
+
+
+@add.command()
+@click.argument('label', type=str)
+@click.pass_obj
+def label(issue, label):
+    click.echo("add to: {id}".format(id=issue.id))
+    click.echo("label: {label}".format(label=label))
+
+
+if __name__ == '__main__':
+    cli()
