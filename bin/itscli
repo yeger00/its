@@ -2,7 +2,6 @@
 
 import click
 import os
-import yaml
 import its
 
 @click.group()
@@ -45,9 +44,12 @@ def new(ctx, title):
 @issue.command()
 @click.pass_obj
 def list(ctx):
-    click.echo("list:")
-    click.echo(ctx[0].issues().all())
-
+    all_issues = ctx[0].issues().all()
+    if not all_issues:
+        click.echo("no issues")
+        return
+    for issue in all_issues:
+        click.echo(issue)
 
 @issue.group()
 @click.pass_obj

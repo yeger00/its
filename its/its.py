@@ -42,6 +42,9 @@ class Issue(object): # pylint: disable=too-few-public-methods
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
 
+    def __str__(self):
+        return "{issue_id}: {title}".format(issue_id=self.issue_id, title=self.title)
+
 class Its(object): # pylint: disable=too-few-public-methods
     '''
     Its class
