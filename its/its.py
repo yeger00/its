@@ -35,15 +35,64 @@ class Issue(object): # pylint: disable=too-few-public-methods
     '''
     Issue class
     '''
-    def __init__(self, title, issue_id=None):
+    def __init__(self, title, status="new", description="", issue_id=None, comments=None): #pylint: disable=too-many-arguments
         self.issue_id = issue_id
+        self.status = status
+        self.description = description
         self.title = title
+        self.comments = []
+        if comments:
+            self.comments = comments
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.__dict__)
+
+    def str_summary(self):
+        '''
+        return a summary of the issue
+        '''
+        return "id: {issue_id}\ntitle: {title}\nstatus: {status}".format(
+            issue_id=self.issue_id, title=self.title, status=self.status)
+
+    def str_full(self):
+        '''
+        return the full issue
+        '''
+        return "id: {issue_id}\ntitle: {title}\nstatus: {status}\n\n{description}".format(
+            issue_id=self.issue_id, title=self.title,
+            status=self.status, description=self.description)
+
+    def __str__(self):
+        return self.str_summary()
+
+class Comment(object): # pylint: disable=too-few-public-methods
+    '''
+    Issue class
+    '''
+    def __init__(self, author, comment):
+        self.author = author
+        self.comment = comment
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
 
     def __str__(self):
-        return "{issue_id}: {title}".format(issue_id=self.issue_id, title=self.title)
+        return "{author}: {comment}".format(author=self.author, comment=self.comment)
+
+class Change(object): # pylint: disable=too-few-public-methods
+    '''
+    Issue class
+    '''
+    def __init__(self, what, old, new):
+        self.what = what
+        self.old = old
+        self.new = new
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.__dict__)
+
+    def __str__(self):
+        return "{what}: {old} -> {new}".format(what=self.what, old=self.old, new=self.new)
 
 class Its(object): # pylint: disable=too-few-public-methods
     '''
@@ -84,19 +133,26 @@ class Issues(object):
         Adds a new issue
         '''
         issue.issue_id = len(self.database)
-        self.database.insert(issue.__dict__)
+        self.database.insert({"issue" : issue.__dict__, "issue_id" : issue.issue_id})
 
     def all(self):
         '''
         returns all the issues
         '''
-        return [to_type(issue, Issue) for issue in self.database.all()]
+        return [to_type(issue["issue"], Issue) for issue in self.database.all()]
 
     def get(self, issue_id):
         '''
         returns an issue by id
         '''
-        issue = self.database.get(tinydb.Query().issue_id == issue_id)
+        issue = self.database.get(tinydb.Query().issue_id == issue_id)["issue"]
         if issue:
             return to_type(issue, Issue)
         return None
+
+    def update(self, issue):
+        '''
+        updates the given issue
+        '''
+        issue = self.database.update({"issue": issue.__dict__},
+                                     tinydb.Query().issue_id == issue.issue_id)
