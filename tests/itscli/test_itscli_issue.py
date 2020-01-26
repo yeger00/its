@@ -35,5 +35,5 @@ def test_itscli_issue_new_issue():
     assert subprocess.run(["itscli", "issue", "new", "title"]).returncode == 0
     run = subprocess.run(["itscli", "issue", "list"], stdout=subprocess.PIPE)
     assert run.returncode == 0
-    assert run.stdout == b'0: title\n1: title\n'
+    assert run.stdout == b'id: 0\ntitle: title\nstatus: new\nid: 1\ntitle: title\nstatus: new\n'
     tempdir.cleanup()

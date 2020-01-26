@@ -21,7 +21,10 @@ def init():
 @click.pass_context
 def issue(ctx, id):
     its_obj = its.Its(os.getcwd(), False)
-    issue = its_obj.issues().get(id)
+    if id is not None:
+        issue = its_obj.issues().get(id)
+    else:
+        issue = None
     ctx.obj = (its_obj, issue)
     if ctx.invoked_subcommand is not None:
         return
@@ -33,7 +36,6 @@ def issue(ctx, id):
 
 
 @issue.command()
-# @click.argument('id', type=int, required=True)
 @click.argument('title', type=str, required=True)
 @click.pass_obj
 def new(ctx, title):
@@ -42,14 +44,18 @@ def new(ctx, title):
 
 
 @issue.command()
+@click.option('--full', is_flag=True)
 @click.pass_obj
-def list(ctx):
+def list(ctx, full):
     all_issues = ctx[0].issues().all()
     if not all_issues:
         click.echo("no issues")
         return
     for issue in all_issues:
-        click.echo(issue)
+        if full:
+            click.echo(issue.str_full())
+        else:
+            click.echo(issue)
 
 @issue.group()
 @click.pass_obj
@@ -60,9 +66,12 @@ def add(issue):
 @add.command()
 @click.argument('comment', type=str)
 @click.pass_obj
-def comment(issue, comment):
-    click.echo("add to: {id}".format(id=issue.id))
+def comment(ctx, comment):
+    issue=ctx[1]
+    click.echo("add to: {id}".format(id=issue.issue_id))
     click.echo("comment: {comment}".format(comment=comment))
+    issue.comments.append(comment)
+    ctx[0].issues().update(issue)
 
 
 @add.command()
