@@ -23,7 +23,7 @@ class PyTest(TestCommand):
 
 setup(
     name="its",
-    version="0.0.2",
+    version="0.0.3",
     author="Avi Yeger",
     author_email="yeger00@gmail.com",
     description="An “Issue tracking system” as part of your repository",
