@@ -3,7 +3,15 @@ Its main script file
 '''
 
 import os
+import json
 import tinydb
+
+class MyEncoder(json.JSONEncoder):
+    '''
+    Class that genericly encods another class into JSON
+    '''
+    def default(self, o): # pylint: disable=E0202
+        return o.__dict__
 
 def to_type(obj, new_type):
     '''
@@ -35,14 +43,24 @@ class Issue(object): # pylint: disable=too-few-public-methods
     '''
     Issue class
     '''
-    def __init__(self, title, status="new", description="", issue_id=None, comments=None): #pylint: disable=too-many-arguments
+    def __init__(self, title, status="new", description="", #pylint: disable=too-many-arguments
+                 issue_id=None, comments=None, status_changes=None):
         self.issue_id = issue_id
-        self.status = status
+        self.status = ""
+        self.status_changes = []
+        self.change_status(status)
         self.description = description
         self.title = title
-        self.comments = []
+
+        if status_changes:
+            self.status_changes = [to_type(change, Change) for change in status_changes]
+        else:
+            self.status_changes = []
+
         if comments:
-            self.comments = comments
+            self.comments = [to_type(comment, Comment) for comment in comments]
+        else:
+            self.comments = []
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
@@ -58,16 +76,44 @@ class Issue(object): # pylint: disable=too-few-public-methods
         '''
         return the full issue
         '''
-        return "id: {issue_id}\ntitle: {title}\nstatus: {status}\n\n{description}".format(
-            issue_id=self.issue_id, title=self.title,
-            status=self.status, description=self.description)
+        str_full_format = """id: {issue_id}
+title: {title}
+status: {status}
+
+description: {description}
+
+comments:
+{comments}"""
+        return str_full_format.format(issue_id=self.issue_id, title=self.title,
+                                      status=self.status, description=self.description,
+                                      comments=self.str_comments())
+
+    def str_changes(self):
+        '''
+        return a string representation of all the comments
+        '''
+        return "\n".join([str(change) for change in self.status_changes])
+
+    def str_comments(self):
+        '''
+        return a string representation of all the comments
+        '''
+        return "\n".join([str(comment) for comment in self.comments])
+
+    def change_status(self, new_status):
+        '''
+        Changes the status of the issue
+        '''
+        change = Change("status", self.status, new_status)
+        self.status_changes.append(change)
+        self.status = new_status
 
     def __str__(self):
         return self.str_summary()
 
 class Comment(object): # pylint: disable=too-few-public-methods
     '''
-    Issue class
+    Comment class
     '''
     def __init__(self, author, comment):
         self.author = author
@@ -81,7 +127,7 @@ class Comment(object): # pylint: disable=too-few-public-methods
 
 class Change(object): # pylint: disable=too-few-public-methods
     '''
-    Issue class
+    Change class
     '''
     def __init__(self, what, old, new):
         self.what = what
@@ -113,13 +159,13 @@ class Its(object): # pylint: disable=too-few-public-methods
                 raise Exception("not a its repo")
             self.its_dir_path = its_dir
 
-
     def issues(self):
         '''
         returns the issues
         '''
         db_path = os.path.join(self.its_dir_path, self.ISSUES_FILE)
-        return Issues(tinydb.TinyDB(db_path, sort_keys=True, indent=4, separators=(',', ': ')))
+        return Issues(tinydb.TinyDB(db_path, sort_keys=True, indent=4,
+                                    separators=(',', ': '), cls=MyEncoder))
 
 class Issues(object):
     '''
