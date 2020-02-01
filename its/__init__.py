@@ -1,4 +1,4 @@
 '''
 Its module
 '''
-from .its import Its, Issue
+from .its import Its, Issue, Comment

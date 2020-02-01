@@ -18,8 +18,10 @@ def init():
 
 @cli.group(invoke_without_command=True)
 @click.option('--id', type=int, required=False)
+@click.option('--full', is_flag=True)
+@click.option('--history', is_flag=True)
 @click.pass_context
-def issue(ctx, id):
+def issue(ctx, id, full, history):
     its_obj = its.Its(os.getcwd(), False)
     if id is not None:
         issue = its_obj.issues().get(id)
@@ -30,7 +32,12 @@ def issue(ctx, id):
         return
 
     if issue is not None:
-        click.echo("issue: {issue}".format(issue=issue))
+        if full:
+            click.echo(issue.str_full())
+        else:
+            click.echo(issue)
+        if history:
+            click.echo(issue.str_changes())
     else:
         click.echo(ctx.get_help())
 
@@ -45,8 +52,9 @@ def new(ctx, title):
 
 @issue.command()
 @click.option('--full', is_flag=True)
+@click.option('--history', is_flag=True)
 @click.pass_obj
-def list(ctx, full):
+def list(ctx, full, history):
     all_issues = ctx[0].issues().all()
     if not all_issues:
         click.echo("no issues")
@@ -56,6 +64,25 @@ def list(ctx, full):
             click.echo(issue.str_full())
         else:
             click.echo(issue)
+        if history:
+            click.echo(issue.str_changes())
+
+@issue.group()
+@click.pass_obj
+def set(issue):
+    pass
+
+@set.command()
+@click.argument('status', type=str)
+@click.pass_obj
+def status(ctx, status):
+    issue=ctx[1]
+    if not issue:
+        click.echo("need --id")
+    if issue:
+        issue.change_status(status)
+        ctx[0].issues().update(issue)
+
 
 @issue.group()
 @click.pass_obj
@@ -65,12 +92,13 @@ def add(issue):
 
 @add.command()
 @click.argument('comment', type=str)
+@click.argument('author', type=str)
 @click.pass_obj
-def comment(ctx, comment):
+def comment(ctx, comment, author):
     issue=ctx[1]
     click.echo("add to: {id}".format(id=issue.issue_id))
     click.echo("comment: {comment}".format(comment=comment))
-    issue.comments.append(comment)
+    issue.comments.append(its.Comment(comment, author))
     ctx[0].issues().update(issue)
 
 
