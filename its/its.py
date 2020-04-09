@@ -92,7 +92,13 @@ comments:
         '''
         return a string representation of all the comments
         '''
-        return "\n".join([str(change) for change in self.status_changes])
+        str_changes_format = """
+changes:
+{changes}
+"""
+        changes = "\n".join(["{change}".format(change=str(change))
+                             for change in self.status_changes])
+        return str_changes_format.format(changes=changes)
 
     def str_comments(self):
         '''

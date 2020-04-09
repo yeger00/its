@@ -37,6 +37,11 @@ setup(
         "pylint==2.4.4",
     ],
     tests_require=["pytest", "pytest_mock"],
+    extras_require={
+        'dev': [
+            'pyinstaller'
+        ]
+    },
     cmdclass={"test": PyTest},
     scripts=["./bin/itscli"],
 )
