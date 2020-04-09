@@ -23,7 +23,7 @@ class PyTest(TestCommand):
 
 setup(
     name="its",
-    version="0.0.4",
+    version="0.0.5",
     author="Avi Yeger",
     author_email="yeger00@gmail.com",
     description="An “Issue tracking system” as part of your repository",
@@ -37,6 +37,11 @@ setup(
         "pylint==2.4.4",
     ],
     tests_require=["pytest", "pytest_mock"],
+    extras_require={
+        'dev': [
+            'pyinstaller'
+        ]
+    },
     cmdclass={"test": PyTest},
     scripts=["./bin/itscli"],
 )
