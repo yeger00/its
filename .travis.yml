@@ -1,27 +1,29 @@
-dist: xenial
-language: python
-python:
-- '3.6'
-- '3.7'
-install:
-- pip install -r requirements.dev.txt
-- pip install .
-script:
-- pylint --rcfile=.pylintrc its
-- pytest
-- pyinstaller -F bin/itscli
-deploy:
-  - provider: pypi
-    user: "__token__"
-    password:
-      secure: L7gKPARApWnhANZBpW/Ya+fOcWSpc8dLJhCCU6eZTC5fOGi1As02zOkl99U1/SKER9skiVxiGjSMGbjbibJ25GX9S3vrOeJFaiHy+6lskNGshT4Ow2oXfeHmc7qUxe9xXUDEhTfW2zWWH/gMPRTmZdGGkKgkuNVOWBXg/j1BbtykQDfCWJS0YvlZugLvpCBFHKcn5CJG45/vQoJHD0Y0RMwErAeb8UCw/+4syS0c1dEjYm7SXShpbyLPefmgUrAuge8/fRU6ToVrdX6vry+Ubp5jk/020XnJB0mVhIOlbwVSZq+8FOuid6H3UpOLx/jPu3F4W8qE0A6TID0bjjYaR5Pru/aZkEYfnjsa/6Sd1i/+pp8GNrTHdlNtTo+O3XaHZJ3gY0D79cJUfV/BgGKui7aLv8lDGhiXGRE2JnFgmf63/cPjw+5so+HbSbBaQP9URXOnOJNfwVRf/TxCnhI1SCGrSFXihErHQ9I9h9s9zAiJpJ1HD3h+tpIPUtXLfeyS5FWFup1drd71rTaEp+jhlMx7fZ6ItEYCgUnfrIVeDJaG3uA5ltgaeGQN01JblNGJ+36r0F7LYe4vuigFmHGFnu7eiw6oe7DpK5tVynSjRJbtu/XrHgbC9i/7Zpjwftn9RPZjjPWsUanu6gMsqbjRtop7ZgSgWIqkbsx8ZRAOBEs=
-    skip_existing: true
-    on:
-      tags: true
-  - provider: releases
-    api_key:
-      secure: IP+Dd3aRpgqqypRoeMLdIEy/RYAapnBNpKOnouJ7/9dTyfXl3qCS8gY3Ca83XVoHrrSFhHg6EhN0SU+RWJSKXa/9vE1/JDqGN6a/8ml0fCrw0CuRRlSKRLW13CHgrs9gAspW/+fyqAYnh+DsUKfhn6N+5emJRVcnCl5eICl8WGYR4Wd/B4fKfj0MFE14t/Q7VS0wARnLjL2BZ3cyDigxsW/rJPMY8c4BQGgja7gmfzbSLWkCxvdPRwiO5aRrKelQREq19qCtSvan/h5lw/vSR4yzvf0KgMtZOwRrhA16UvIL8XgFqd3eHZQMtzBAVP/wXhSgOQ1MGvTN3S1tavo/49AS8zjA7aAuP3B+HrBAem/4MYpCxkpS4xMk2MBQT6L5hMGATvk1jA/Sq1nnUHXEO0LDZiDWrScSMzhieLSLamSC7/7HUZ7WrSCSP81bJaYaNVbACao32qL9WC1x6QtNnl+FRUypQRWtlsxvY43ysgZvjA8SxtOam+Qyjz6LC468XykJir/OHzjTqB20L8KNA3I2IdmGjwzXf23Xpx9X73RTxhbIMuW14UAt2ZauwYf8xGnNNv7WFeHacL6C48HYEoYmS6dqIHX4m6DfWrBQ9GAw+668TFDuhk/us8qgT1UBS8zemc5yLGqsYJkoXJBT5NyeBWtgMKuu7oMX06risi0=
-    file: dist/itscli
-    skip_cleanup: true
-    on:
-      tags: true
+matrix:
+  include:
+    - dist: xenial
+      language: python
+      python:
+      - '3.6'
+      - '3.7'
+      install:
+      - pip install -r requirements.dev.txt
+      - pip install .
+      script:
+      - pylint --rcfile=.pylintrc its
+      - pytest
+      - pyinstaller -F bin/itscli
+      deploy:
+        - provider: pypi
+          user: "__token__"
+          password:
+            secure: L7gKPARApWnhANZBpW/Ya+fOcWSpc8dLJhCCU6eZTC5fOGi1As02zOkl99U1/SKER9skiVxiGjSMGbjbibJ25GX9S3vrOeJFaiHy+6lskNGshT4Ow2oXfeHmc7qUxe9xXUDEhTfW2zWWH/gMPRTmZdGGkKgkuNVOWBXg/j1BbtykQDfCWJS0YvlZugLvpCBFHKcn5CJG45/vQoJHD0Y0RMwErAeb8UCw/+4syS0c1dEjYm7SXShpbyLPefmgUrAuge8/fRU6ToVrdX6vry+Ubp5jk/020XnJB0mVhIOlbwVSZq+8FOuid6H3UpOLx/jPu3F4W8qE0A6TID0bjjYaR5Pru/aZkEYfnjsa/6Sd1i/+pp8GNrTHdlNtTo+O3XaHZJ3gY0D79cJUfV/BgGKui7aLv8lDGhiXGRE2JnFgmf63/cPjw+5so+HbSbBaQP9URXOnOJNfwVRf/TxCnhI1SCGrSFXihErHQ9I9h9s9zAiJpJ1HD3h+tpIPUtXLfeyS5FWFup1drd71rTaEp+jhlMx7fZ6ItEYCgUnfrIVeDJaG3uA5ltgaeGQN01JblNGJ+36r0F7LYe4vuigFmHGFnu7eiw6oe7DpK5tVynSjRJbtu/XrHgbC9i/7Zpjwftn9RPZjjPWsUanu6gMsqbjRtop7ZgSgWIqkbsx8ZRAOBEs=
+          skip_existing: true
+          on:
+            tags: true
+        - provider: releases
+          api_key:
+            secure: IP+Dd3aRpgqqypRoeMLdIEy/RYAapnBNpKOnouJ7/9dTyfXl3qCS8gY3Ca83XVoHrrSFhHg6EhN0SU+RWJSKXa/9vE1/JDqGN6a/8ml0fCrw0CuRRlSKRLW13CHgrs9gAspW/+fyqAYnh+DsUKfhn6N+5emJRVcnCl5eICl8WGYR4Wd/B4fKfj0MFE14t/Q7VS0wARnLjL2BZ3cyDigxsW/rJPMY8c4BQGgja7gmfzbSLWkCxvdPRwiO5aRrKelQREq19qCtSvan/h5lw/vSR4yzvf0KgMtZOwRrhA16UvIL8XgFqd3eHZQMtzBAVP/wXhSgOQ1MGvTN3S1tavo/49AS8zjA7aAuP3B+HrBAem/4MYpCxkpS4xMk2MBQT6L5hMGATvk1jA/Sq1nnUHXEO0LDZiDWrScSMzhieLSLamSC7/7HUZ7WrSCSP81bJaYaNVbACao32qL9WC1x6QtNnl+FRUypQRWtlsxvY43ysgZvjA8SxtOam+Qyjz6LC468XykJir/OHzjTqB20L8KNA3I2IdmGjwzXf23Xpx9X73RTxhbIMuW14UAt2ZauwYf8xGnNNv7WFeHacL6C48HYEoYmS6dqIHX4m6DfWrBQ9GAw+668TFDuhk/us8qgT1UBS8zemc5yLGqsYJkoXJBT5NyeBWtgMKuu7oMX06risi0=
+          file: dist/itscli
+          skip_cleanup: true
+          on:
+            tags: true
