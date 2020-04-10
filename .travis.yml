@@ -11,7 +11,7 @@ matrix:
       script:
       - pylint --rcfile=.pylintrc its
       - pytest
-      - pyinstaller -F bin/itscli
+      - pyinstaller -F bin/itscli -n itscli-linux
       deploy:
         - provider: pypi
           user: "__token__"
@@ -23,7 +23,25 @@ matrix:
         - provider: releases
           api_key:
             secure: IP+Dd3aRpgqqypRoeMLdIEy/RYAapnBNpKOnouJ7/9dTyfXl3qCS8gY3Ca83XVoHrrSFhHg6EhN0SU+RWJSKXa/9vE1/JDqGN6a/8ml0fCrw0CuRRlSKRLW13CHgrs9gAspW/+fyqAYnh+DsUKfhn6N+5emJRVcnCl5eICl8WGYR4Wd/B4fKfj0MFE14t/Q7VS0wARnLjL2BZ3cyDigxsW/rJPMY8c4BQGgja7gmfzbSLWkCxvdPRwiO5aRrKelQREq19qCtSvan/h5lw/vSR4yzvf0KgMtZOwRrhA16UvIL8XgFqd3eHZQMtzBAVP/wXhSgOQ1MGvTN3S1tavo/49AS8zjA7aAuP3B+HrBAem/4MYpCxkpS4xMk2MBQT6L5hMGATvk1jA/Sq1nnUHXEO0LDZiDWrScSMzhieLSLamSC7/7HUZ7WrSCSP81bJaYaNVbACao32qL9WC1x6QtNnl+FRUypQRWtlsxvY43ysgZvjA8SxtOam+Qyjz6LC468XykJir/OHzjTqB20L8KNA3I2IdmGjwzXf23Xpx9X73RTxhbIMuW14UAt2ZauwYf8xGnNNv7WFeHacL6C48HYEoYmS6dqIHX4m6DfWrBQ9GAw+668TFDuhk/us8qgT1UBS8zemc5yLGqsYJkoXJBT5NyeBWtgMKuu7oMX06risi0=
-          file: dist/itscli
+          file: dist/itscli-linux
+          skip_cleanup: true
+          on:
+            tags: true
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python --version=3.7
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      install:
+        - pip install -r requirements.dev.txt
+      script:
+        - pyinstaller -F bin/itscli -n itscli-win
+      deploy:
+        - provider: releases
+          api_key:
+            secure: IP+Dd3aRpgqqypRoeMLdIEy/RYAapnBNpKOnouJ7/9dTyfXl3qCS8gY3Ca83XVoHrrSFhHg6EhN0SU+RWJSKXa/9vE1/JDqGN6a/8ml0fCrw0CuRRlSKRLW13CHgrs9gAspW/+fyqAYnh+DsUKfhn6N+5emJRVcnCl5eICl8WGYR4Wd/B4fKfj0MFE14t/Q7VS0wARnLjL2BZ3cyDigxsW/rJPMY8c4BQGgja7gmfzbSLWkCxvdPRwiO5aRrKelQREq19qCtSvan/h5lw/vSR4yzvf0KgMtZOwRrhA16UvIL8XgFqd3eHZQMtzBAVP/wXhSgOQ1MGvTN3S1tavo/49AS8zjA7aAuP3B+HrBAem/4MYpCxkpS4xMk2MBQT6L5hMGATvk1jA/Sq1nnUHXEO0LDZiDWrScSMzhieLSLamSC7/7HUZ7WrSCSP81bJaYaNVbACao32qL9WC1x6QtNnl+FRUypQRWtlsxvY43ysgZvjA8SxtOam+Qyjz6LC468XykJir/OHzjTqB20L8KNA3I2IdmGjwzXf23Xpx9X73RTxhbIMuW14UAt2ZauwYf8xGnNNv7WFeHacL6C48HYEoYmS6dqIHX4m6DfWrBQ9GAw+668TFDuhk/us8qgT1UBS8zemc5yLGqsYJkoXJBT5NyeBWtgMKuu7oMX06risi0=
+          file: dist/itscli-win
           skip_cleanup: true
           on:
             tags: true
