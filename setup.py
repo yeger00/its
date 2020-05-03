@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf8") as fh:
     long_description = fh.read()
 
 class PyTest(TestCommand):
@@ -23,7 +23,7 @@ class PyTest(TestCommand):
 
 setup(
     name="its",
-    version="0.0.5",
+    version="0.0.6",
     author="Avi Yeger",
     author_email="yeger00@gmail.com",
     description="An “Issue tracking system” as part of your repository",
