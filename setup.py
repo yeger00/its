@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 import sys
+import os
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
-with open("README.md", "r", encoding="utf8") as fh:
-    long_description = fh.read()
+here = os.path.abspath(os.path.dirname(__file__))
+about = {}
+MODULE_NAME="its"
+with open(os.path.join(here, MODULE_NAME, "__version__.py"), "r", encoding="utf8") as f:
+    exec(f.read(), about)
+
+with open("README.md", "r", encoding="utf8") as f:
+    long_description = f.read()
 
 class PyTest(TestCommand):
     user_options = [("pytest-args=", "a", "Arguments to pass to pytest")]
@@ -22,14 +29,14 @@ class PyTest(TestCommand):
 
 
 setup(
-    name="its",
-    version="0.0.6",
-    author="Avi Yeger",
-    author_email="yeger00@gmail.com",
-    description="An “Issue tracking system” as part of your repository",
+    name=MODULE_NAME,
+    version=about["__version__"],
+    author=about["__author__"],
+    author_email=about["__author_email__"],
+    description=about["__description__"],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yeger00/its",
+    url=about["__url__"],
     packages=find_packages(),
     install_requires=[
         "Click==7.0",
