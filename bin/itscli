@@ -3,8 +3,16 @@
 import click
 import os
 import its
+from its import __version__ as version
+def print_version(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo(its.version)
+    ctx.exit()
+
 
 @click.group()
+@click.option('--version', is_flag=True, callback=print_version, expose_value=False, is_eager=True, help="Show version and exit.")
 def cli():
     pass
 
