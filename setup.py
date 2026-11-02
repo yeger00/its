@@ -41,7 +41,7 @@ setup(
     install_requires=[
         "Click==7.0",
         "tinydb==3.15.2",
-        "pylint==2.4.4",
+        "pylint==4.0.9",
     ],
     tests_require=["pytest", "pytest_mock"],
     extras_require={
